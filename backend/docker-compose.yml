@@ -1,0 +1,75 @@
+version: '3'
+services:
+    backend-laranext14:
+        build:
+            context: ./docker/8.2
+            dockerfile: Dockerfile
+            args:
+                WWWGROUP: '${WWWGROUP}'
+        image: sail-8.2/app
+        extra_hosts:
+            - 'host.docker.internal:host-gateway'
+        ports:
+            - '${APP_PORT:-8000}:8000'
+        environment:
+            WWWUSER: '${WWWUSER}'
+            LARAVEL_SAIL: 1
+            XDEBUG_MODE: '${SAIL_XDEBUG_MODE:-off}'
+            XDEBUG_CONFIG: '${SAIL_XDEBUG_CONFIG:-client_host=host.docker.internal}'
+            IGNITION_LOCAL_SITES_PATH: '${PWD}'
+        volumes:
+            - '.:/var/www/html'
+        networks:
+            - apinetwork-laranext14
+        depends_on:
+            - pgsql-laranext14
+            - redis-laranext14
+            - mailpit-laranext14
+    pgsql-laranext14:
+        image: 'postgres:13-alpine' #versao sem vulnerabilidade
+        ports:
+            - '5432:5432'
+        environment:
+            PGPASSWORD: '${DB_PASSWORD}'
+            POSTGRES_DB: '${DB_DATABASE}'
+            POSTGRES_USER: '${DB_USERNAME}'
+            POSTGRES_PASSWORD: '${DB_PASSWORD:-secret}'
+        volumes:
+            - 'api-pgsql-laranext14:/var/lib/postgresql/data'
+        networks:
+            - apinetwork-laranext14
+        healthcheck:
+            test: [ "CMD", "pg_isready", "-q", "-d", "${DB_DATABASE}", "-U", "${DB_USERNAME}" ]
+            retries: 3
+            timeout: 5s
+
+    redis-laranext14:
+        image: 'redis:alpine'
+        ports:
+            - '${FORWARD_REDIS_PORT:-6379}:6379'
+        volumes:
+            - 'api-redis-laranext14:/data'
+        networks:
+            - apinetwork-laranext14
+        healthcheck:
+            test:
+                - CMD
+                - redis-cli
+                - ping
+            retries: 3
+            timeout: 5s
+    mailpit-laranext14:
+        image: 'axllent/mailpit:latest'
+        ports:
+            - '${FORWARD_MAILPIT_PORT:-1025}:1025'
+            - '${FORWARD_MAILPIT_DASHBOARD_PORT:-8025}:8025'
+        networks:
+            - apinetwork-laranext14
+networks:
+    apinetwork-laranext14:
+        driver: bridge
+volumes:
+    api-pgsql-laranext14:
+         driver: local
+    api-redis-laranext14:
+        driver: local
