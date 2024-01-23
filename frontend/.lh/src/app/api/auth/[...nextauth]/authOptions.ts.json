@@ -1,0 +1,18 @@
+{
+    "sourceFile": "src/app/api/auth/[...nextauth]/authOptions.ts",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 0,
+            "patches": [
+                {
+                    "date": 1705972241202,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                }
+            ],
+            "date": 1705972241202,
+            "name": "Commit-0",
+            "content": "import { LOGIN_URL } from \"@/lib/ApiEndPoints\";\r\nimport axios, { AxiosResponse } from \"axios\";\r\nimport { AuthOptions, ISODateString, User } from \"next-auth\";\r\nimport { JWT } from \"next-auth/jwt\";\r\nimport CredentialsProvider from \"next-auth/providers/credentials\";\r\n\r\nexport interface CustomSession {\r\n    user?: CustomUser;\r\n    expires: ISODateString;\r\n}\r\nexport interface CustomUser {\r\n    id?: string | null;\r\n    name?: string | null;\r\n    email?: string | null;\r\n    image?: string | null;\r\n    token?: string | null;\r\n    created_at?: string | null;\r\n    updated_at?: string | null;\r\n}\r\nexport const authOptions: AuthOptions = {\r\n    pages: {\r\n        signIn: \"/\",\r\n    },\r\n    callbacks: {\r\n        async jwt({ token, user }) {\r\n            if (user) {\r\n                token.user = user;\r\n            }\r\n            return token;\r\n        },\r\n\r\n        async session({\r\n                          session,\r\n                          token,\r\n                          user,\r\n                      }: {\r\n            session: CustomSession;\r\n            token: JWT;\r\n            user: User;\r\n        }) {\r\n            session.user = token.user as CustomUser;\r\n            return session;\r\n        },\r\n    },\r\n\r\n    providers: [\r\n        CredentialsProvider({\r\n            name: \"Credentials\",\r\n            credentials: {\r\n                email: {},\r\n                password: {},\r\n            },\r\n            async authorize(credentials, req) {\r\n                const res = await axios.post(LOGIN_URL, credentials);\r\n                const response = res.data;\r\n                const user = response?.user;\r\n                if (user) {\r\n                    return user;\r\n                } else {\r\n                    return null;\r\n                }\r\n            },\r\n        }),\r\n    ],\r\n};"
+        }
+    ]
+}

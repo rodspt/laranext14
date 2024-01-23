@@ -1,0 +1,26 @@
+{
+    "sourceFile": "src/components/comment/AddComment.tsx",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 2,
+            "patches": [
+                {
+                    "date": 1705972400989,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1705972408377,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -42,9 +42,9 @@\n         let comment = response?.comment;\n         comment[\"user\"] = session?.user;\n         setContent(\"\");\n         updateCallback(comment);\n-        toast.success(\"Coment�rio inserido com sucesso!\", { theme: \"colored\" });\n+        toast.success(\"Comentario inserido com sucesso!\", { theme: \"colored\" });\n         setLoading(false);\n       })\n       .catch((err) => {\n         setLoading(false);\n"
+                },
+                {
+                    "date": 1705972438891,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -52,14 +52,14 @@\n   };\n \n   return (\n     <div>\n-      <h1 className=\"text-xl font-bold mt-5\">Adicionar coment�rio</h1>\n+      <h1 className=\"text-xl font-bold mt-5\">Adicionar comentario</h1>\n       <form onSubmit={handleSubmit}>\n         <textarea\n           className=\"outline-none bg-muted rounded-lg h-20 w-full p-2\"\n           onChange={(e) => setContent(e.target.value)}\n-          placeholder=\"Escreva seu coment�rio...\"\n+          placeholder=\"Escreva seu comentario...\"\n           value={content}\n         ></textarea>\n         <Button type=\"submit\" disabled={loading}>\n           {\" \"}\n"
+                }
+            ],
+            "date": 1705972400989,
+            "name": "Commit-0",
+            "content": "\"use client\";\nimport { CustomSession } from \"@/app/api/auth/[...nextauth]/authOptions\";\nimport React, { useState } from \"react\";\nimport axios from \"axios\";\nimport { toast } from \"react-toastify\";\nimport { COMMENT_URL } from \"@/lib/ApiEndPoints\";\nimport { Button } from \"../ui/button\";\n\nexport default function AddComment({\n  session,\n  postId,\n  updateCallback,\n}: {\n  session: CustomSession | null;\n  postId: number;\n  updateCallback: (comment: CommentType) => void;\n}) {\n  const [content, setContent] = useState<string>(\"\");\n  const [loading, setLoading] = useState(false);\n\n  const handleSubmit = (event: React.FormEvent) => {\n    event.preventDefault();\n\n    if (session === null) {\n      toast.warn(\"Primeiro realize login no sistema!\", { theme: \"colored\" });\n      return;\n    }\n    setLoading(true);\n    axios\n      .post(\n        COMMENT_URL,\n        { content: content, post_id: postId },\n        {\n          headers: {\n            Authorization: `Bearer ${session?.user?.token}`,\n            Accept: \"application/json\",\n          },\n        }\n      )\n      .then((res) => {\n        const response = res.data;\n        let comment = response?.comment;\n        comment[\"user\"] = session?.user;\n        setContent(\"\");\n        updateCallback(comment);\n        toast.success(\"Coment�rio inserido com sucesso!\", { theme: \"colored\" });\n        setLoading(false);\n      })\n      .catch((err) => {\n        setLoading(false);\n      });\n  };\n\n  return (\n    <div>\n      <h1 className=\"text-xl font-bold mt-5\">Adicionar coment�rio</h1>\n      <form onSubmit={handleSubmit}>\n        <textarea\n          className=\"outline-none bg-muted rounded-lg h-20 w-full p-2\"\n          onChange={(e) => setContent(e.target.value)}\n          placeholder=\"Escreva seu coment�rio...\"\n          value={content}\n        ></textarea>\n        <Button type=\"submit\" disabled={loading}>\n          {\" \"}\n          {loading ? \"Processando..\" : \"Comentar\"}{\" \"}\n        </Button>\n      </form>\n    </div>\n  );\n}\n"
+        }
+    ]
+}

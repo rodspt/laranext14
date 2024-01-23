@@ -1,0 +1,18 @@
+{
+    "sourceFile": "src/components/auth/Login.tsx",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 0,
+            "patches": [
+                {
+                    "date": 1705972153171,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                }
+            ],
+            "date": 1705972153171,
+            "name": "Commit-0",
+            "content": "\"use client\";\r\nimport React, { useState } from \"react\";\r\nimport {\r\n  Card,\r\n  CardContent,\r\n  CardDescription,\r\n  CardHeader,\r\n  CardTitle,\r\n} from \"@/components/ui/card\";\r\nimport { Input } from \"@/components/ui/input\";\r\nimport { Label } from \"@/components/ui/label\";\r\nimport { Button } from \"@/components/ui/button\";\r\nimport axios from \"axios\";\r\nimport { toast } from \"react-toastify\";\r\nimport { signIn } from \"next-auth/react\";\r\nimport { CHECK_CREDENTIALS } from \"@/lib/ApiEndPoints\";\r\n\r\nexport default function Login() {\r\n  const [loading, setLoading] = useState<boolean>(false);\r\n  const [authState, setAuthState] = useState<AuthStateType>({\r\n    email: \"\",\r\n    password: \"\",\r\n  });\r\n  const [errors, setErrors] = useState({\r\n    email: [],\r\n    password: [],\r\n  });\r\n\r\n  const handleSubmit = (event: React.FormEvent) => {\r\n    event.preventDefault();\r\n    setLoading(true);\r\n    axios\r\n      .post(CHECK_CREDENTIALS, authState, {\r\n        headers: {\r\n          Accept: \"application/json\",\r\n        },\r\n      })\r\n      .then((res) => {\r\n        const response = res.data;\r\n        setLoading(false);\r\n        if (response?.status == 200) {\r\n          signIn(\"credentials\", {\r\n            email: authState.email,\r\n            password: authState.password,\r\n            redirect: true,\r\n            callbackUrl: \"/\",\r\n          });\r\n        } else if (response?.status == 401) {\r\n          toast.error(response?.message, { theme: \"colored\" });\r\n        }\r\n      })\r\n      .catch((err) => {\r\n        setLoading(false);\r\n        setErrors(err?.response?.data?.errors);\r\n      });\r\n  };\r\n\r\n  return (\r\n    <Card>\r\n      <CardHeader>\r\n        <CardTitle>Login</CardTitle>\r\n        <CardDescription>Bem vindo!</CardDescription>\r\n      </CardHeader>\r\n      <CardContent className=\"space-y-2\">\r\n        <form onSubmit={handleSubmit}>\r\n          <div className=\"space-y-1\">\r\n            <Label htmlFor=\"email\">Email</Label>\r\n            <Input\r\n              id=\"email\"\r\n              type=\"email\"\r\n              placeholder=\"Digite seu Email..\"\r\n              onChange={(e) =>\r\n                setAuthState({ ...authState, email: e.target.value })\r\n              }\r\n            />\r\n            <span className=\"text-red-500\">{errors?.email?.[0]}</span>\r\n          </div>\r\n          <div className=\"space-y-1\">\r\n            <Label htmlFor=\"password\">Senha</Label>\r\n            <Input\r\n              id=\"password\"\r\n              placeholder=\"Digite sua senha..\"\r\n              type=\"password\"\r\n              onChange={(e) =>\r\n                setAuthState({ ...authState, password: e.target.value })\r\n              }\r\n            />\r\n            <span className=\"text-red-500\">{errors?.password?.[0]}</span>\r\n          </div>\r\n          <div className=\"mt-4\">\r\n            <Button className=\"w-full\" disabled={loading}>\r\n              {\" \"}\r\n              {loading ? \"Processando...\" : \"Acessar\"}{\" \"}\r\n            </Button>\r\n          </div>\r\n        </form>\r\n      </CardContent>\r\n    </Card>\r\n  );\r\n}\r\n"
+        }
+    ]
+}

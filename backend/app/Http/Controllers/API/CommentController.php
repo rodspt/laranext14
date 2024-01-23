@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\Controller;
 use App\Models\Comment;
 use Illuminate\Http\Request;
+use Log;
+use App\Http\Controllers\Controller;
 
 class CommentController extends Controller
 {
@@ -29,16 +30,20 @@ class CommentController extends Controller
      */
     public function store(Request $request)
     {
-       $payload = $request->validate([
-          "post_id" => "required|exists:posts,id",
-          "content" => "required|max:10000",
-       ]);
+        $payload = $request->validate([
+            "post_id" => "required",
+            "content" => "required|max:10000"
+        ]);
+        try {
+            $user = $request->user();
+            $payload["user_id"] = $user->id;
+            $comment = Comment::create($payload);
+            return ["status" => 200, "message" => "Comentário adicionado com sucesso!", "comment" => $comment];
+        } catch (\Exception $err) {
+            Log::info("comment_create_err =>" . $err->getMessage());
+            return response()->json(["status" => 500, "message" => "Ocorreu um erro inesperado!"], 500);
+        }
 
-       $user = $request->user();
-       $payload["user_id"] = $user->id;
-
-       Comment::create($payload);
-       return ["status"=> 200, "message" => "Comentário adicionado com sucesso"];
     }
 
     /**
@@ -73,13 +78,18 @@ class CommentController extends Controller
      */
     public function destroy(Request $request, string $id)
     {
-       $comment = Comment::find($id);
+        try {
+            $user = $request->user();
+            $comment = Comment::find($id);
+            if ($user->id != $comment->user_id) {
+                return ["status" => 401, "message" => "Não autorizado"];
+            }
+            $comment->delete();
+            return response()->json(["status" => 200, "message" => "Comentário excluido com sucesso!"]);
+        } catch (\Exception $err) {
+            Log::info("comment_delete_err =>" . $err->getMessage());
+            return response()->json(["status" => 500, "message" => "Ocorreu um erro inesperado!"], 500);
+        }
 
-       $user = $request->user();
-       if($user->id !== $comment->user_id){
-            return response()->json(["status" => 401, "message" => "Não autorizado"],401);
-       }
-       $comment->delete();
-       return ["status" => 200, "message" => "Comentário excluido com sucesso"];
     }
 }

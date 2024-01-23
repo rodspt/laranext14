@@ -5,8 +5,8 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Log;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
@@ -54,6 +54,30 @@ class AuthController extends Controller
              return response()->json(["message" => "Ocorreu um erro"],500);
          }
      }
+
+    public function checkCredentials(Request  $request)
+    {
+        $payload = $request->validate([
+            "email" => "required|email",
+            "password" => "required",
+        ]);
+
+        try {
+            $user = User::where("email", $payload["email"])->first();
+            if($user){
+                if(!Hash::check($payload["password"], $user->password))
+                {
+                    return ["status"=> 401, "message"=> "Credenciais inválidas"];
+                }
+
+                return ["status"=> 200, "message" => "Logado com sucesso"];
+            }
+            return ["status" => 401, "message" => "Nenhum usuário com esse e-mail"];
+        } catch (\Exception $err){
+            Log::info("verify_credentials_err => ".$err->getMessage());
+            return response()->json(["message" => "Ocorreu um erro"],500);
+        }
+    }
 
 
      public function logout(Request $request)

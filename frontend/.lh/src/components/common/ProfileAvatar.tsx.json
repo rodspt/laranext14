@@ -1,0 +1,18 @@
+{
+    "sourceFile": "src/components/common/ProfileAvatar.tsx",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 0,
+            "patches": [
+                {
+                    "date": 1705972205375,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                }
+            ],
+            "date": 1705972205375,
+            "name": "Commit-0",
+            "content": "\"use client\";\nimport React from \"react\";\nimport {\n  DropdownMenu,\n  DropdownMenuContent,\n  DropdownMenuItem,\n  DropdownMenuLabel,\n  DropdownMenuSeparator,\n  DropdownMenuTrigger,\n} from \"@/components/ui/dropdown-menu\";\nimport { Avatar, AvatarFallback, AvatarImage } from \"@/components/ui/avatar\";\nimport { signOut } from \"next-auth/react\";\nimport axios from \"axios\";\nimport { CustomUser } from \"@/app/api/auth/[...nextauth]/authOptions\";\nimport { toast } from \"react-toastify\";\nimport Link from \"next/link\";\nimport { LOGOUT_URL } from \"@/lib/ApiEndPoints\";\n\nexport default function ProfileAvatar({ user }: { user: CustomUser }) {\n  const logout = () => {\n    axios\n      .post(\n        LOGOUT_URL,\n        {},\n        {\n          headers: {\n            Authorization: `Bearer ${user?.token}`,\n            Accept: \"application/json\",\n          },\n        }\n      )\n      .then((res) => {\n        const response = res.data;\n        if (response?.status === 200) {\n          signOut({ callbackUrl: \"/\" });\n          toast.success(\"Logout realizado!\", { theme: \"colored\" });\n        }\n      })\n      .catch((err) => {\n        toast.error(\"Ocorreu um erro inesperado\", {\n          theme: \"colored\",\n        });\n      });\n\n    signOut({ redirect: true, callbackUrl: \"/\" });\n  };\n\n  return (\n    <DropdownMenu>\n      <DropdownMenuTrigger asChild>\n        <Avatar className=\"cursor-pointer\">\n          <AvatarImage src=\"https://github.com/shadcn.png\" />\n          <AvatarFallback>TU</AvatarFallback>\n        </Avatar>\n      </DropdownMenuTrigger>\n      <DropdownMenuContent side=\"bottom\">\n        <DropdownMenuLabel>Meu Perfil</DropdownMenuLabel>\n        <DropdownMenuSeparator />\n        <DropdownMenuItem>\n          <Link href=\"/dashboard\">Dashboard</Link>\n        </DropdownMenuItem>\n        <DropdownMenuItem onClick={logout} className=\"cursor-pointer\">\n          Sair\n        </DropdownMenuItem>\n      </DropdownMenuContent>\n    </DropdownMenu>\n  );\n}\n"
+        }
+    ]
+}

@@ -1,0 +1,30 @@
+{
+    "sourceFile": "src/components/dashboard/DeletePost.tsx",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 3,
+            "patches": [
+                {
+                    "date": 1705972718846,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1705972733431,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -33,9 +33,9 @@\n           Authorization: `Bearer ${user?.token}`,\n         },\n       })\n       .then((res) => {\n-        toast.success(\"Post deletado com sucesso!\", { theme: \"colored\" });\n+        toast.success(\"Publicacao deletada com sucesso!\", { theme: \"colored\" });\n         router.refresh();\n       })\n       .catch((err) => {\n         toast.error(\"Ocorreu um erro inesperado!\", {\n"
+                },
+                {
+                    "date": 1705972740083,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -54,9 +54,9 @@\n         />\n       </DialogTrigger>\n       <DialogContent>\n         <DialogHeader>\n-          <DialogTitle>Excluir Publica��o</DialogTitle>\n+          <DialogTitle>Excluir Publicacao</DialogTitle>\n           <DialogDescription>Tem certeza que deseja excluir a publica��o. Esse processo n�o poder� ser desfeito ?</DialogDescription>\n         </DialogHeader>\n         <DialogFooter>\n           <Button onClick={deletePost} variant=\"destructive\">\n"
+                },
+                {
+                    "date": 1705972753110,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -55,9 +55,9 @@\n       </DialogTrigger>\n       <DialogContent>\n         <DialogHeader>\n           <DialogTitle>Excluir Publicacao</DialogTitle>\n-          <DialogDescription>Tem certeza que deseja excluir a publica��o. Esse processo n�o poder� ser desfeito ?</DialogDescription>\n+          <DialogDescription>Tem certeza que deseja excluir a publicacao. Esse processo nao podera ser desfeito ?</DialogDescription>\n         </DialogHeader>\n         <DialogFooter>\n           <Button onClick={deletePost} variant=\"destructive\">\n             Excluir\n"
+                }
+            ],
+            "date": 1705972718846,
+            "name": "Commit-0",
+            "content": "\"use client\";\nimport React, { useState } from \"react\";\nimport {\n  Dialog,\n  DialogContent,\n  DialogFooter,\n  DialogHeader,\n  DialogTitle,\n  DialogTrigger,\n} from \"@/components/ui/dialog\";\nimport { DialogDescription } from \"@radix-ui/react-dialog\";\nimport { Button } from \"../ui/button\";\nimport { CustomUser } from \"@/app/api/auth/[...nextauth]/authOptions\";\nimport axios from \"axios\";\nimport { POST_URL } from \"@/lib/ApiEndPoints\";\nimport { toast } from \"react-toastify\";\nimport { useRouter } from \"next/navigation\";\nimport { Trash } from \"lucide-react\";\n\nexport default function DeletePost({\n  postId,\n  user,\n}: {\n  postId: number;\n  user: CustomUser;\n}) {\n  const [open, setOpen] = useState<boolean>(false);\n  const router = useRouter();\n  const deletePost = () => {\n    axios\n      .delete(`${POST_URL}/${postId}`, {\n        headers: {\n          Authorization: `Bearer ${user?.token}`,\n        },\n      })\n      .then((res) => {\n        toast.success(\"Post deletado com sucesso!\", { theme: \"colored\" });\n        router.refresh();\n      })\n      .catch((err) => {\n        toast.error(\"Ocorreu um erro inesperado!\", {\n          theme: \"colored\",\n        });\n      });\n  };\n\n  return (\n    <Dialog open={open} onOpenChange={setOpen}>\n      <DialogTrigger asChild>\n        <Trash\n          color=\"red\"\n          onClick={() => setOpen(true)}\n          className=\"cursor-pointer\"\n        />\n      </DialogTrigger>\n      <DialogContent>\n        <DialogHeader>\n          <DialogTitle>Excluir Publica��o</DialogTitle>\n          <DialogDescription>Tem certeza que deseja excluir a publica��o. Esse processo n�o poder� ser desfeito ?</DialogDescription>\n        </DialogHeader>\n        <DialogFooter>\n          <Button onClick={deletePost} variant=\"destructive\">\n            Excluir\n          </Button>\n        </DialogFooter>\n      </DialogContent>\n    </Dialog>\n  );\n}\n"
+        }
+    ]
+}

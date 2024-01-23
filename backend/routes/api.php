@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\API\{AuthController, PostController, CommentController};
+use App\Http\Controllers\API\{AuthController, PostController, CommentController, SearchController};
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -22,11 +22,15 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::middleware('auth:sanctum')->group(function(){
     Route::post("/auth/logout",[AuthController::class,"logout"]);
+
+    Route::get("/user/posts",[PostController::class,"fetchUserPosts"]);
     Route::apiResource("post",PostController::class)->except(["index","show"]);
     Route::apiResource("comment",CommentController::class)->except(["index","show"]);
 });
 
 Route::apiResource("post",PostController::class)->only(["index","show"]);
 Route::apiResource("comment",CommentController::class)->only(["index","show"]);
+Route::get("/search",[SearchController::class,"search"]);
 Route::post("/auth/register", [AuthController::class,"register"]);
 Route::post("/auth/login", [AuthController::class,"login"]);
+Route::post("/auth/checkCredentials", [AuthController::class,"checkCredentials"]);

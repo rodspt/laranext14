@@ -1,0 +1,18 @@
+{
+    "sourceFile": "src/lib/ApiService.ts",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 0,
+            "patches": [
+                {
+                    "date": 1705972281253,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                }
+            ],
+            "date": 1705972281253,
+            "name": "Commit-0",
+            "content": "import { CustomUser } from \"@/app/api/auth/[...nextauth]/authOptions\";\nimport {\n  COMMENT_URL,\n  POST_URL,\n  SEARCH_URL,\n  USER_POST_URL,\n} from \"./ApiEndPoints\";\n\nexport async function fetchPosts() {\n  const res = await fetch(POST_URL);\n  if (!res.ok) {\n    throw new Error(\"Failed to fecth posts\");\n  }\n  const response = await res.json();\n  if (response?.status === 200) {\n    return response!.posts;\n  }\n  return null;\n}\n\nexport async function fetchPost(postId: number): Promise<Post | null> {\n  const res = await fetch(POST_URL + \"/\" + postId);\n  if (!res.ok) {\n    throw new Error(\"Failed to fecth posts\");\n  }\n  const response = await res.json();\n  if (response?.status === 200) {\n    return response!.post;\n  }\n  return null;\n}\n\n// * Search posts\nexport async function searchPost(\n  query: string\n): Promise<Array<Post> | null | []> {\n  const res = await fetch(`${SEARCH_URL}?query=${query}`);\n  if (!res.ok) {\n    throw new Error(\"Failed to fecth posts\");\n  }\n  const response = await res.json();\n  if (response?.status === 200) {\n    return response!.posts;\n  }\n  return null;\n}\n\n// * Fetch Comments\nexport async function fetchComments(postId: number) {\n  const res = await fetch(`${COMMENT_URL}?post_id=${postId}`);\n  if (!res.ok) {\n    throw new Error(\"Failed to fecth posts\");\n  }\n  const response = await res.json();\n  if (response?.status === 200) {\n    return response!.comments;\n  }\n  return null;\n}\n\n// * Fetch Comments\nexport async function fetchUserPosts(userId: string, user: CustomUser) {\n  const res = await fetch(`${USER_POST_URL}?user_id=${userId}`, {\n    headers: {\n      Authorization: `Bearer ${user?.token}`,\n      Accept: \"application/json\",\n    },\n  });\n  if (!res.ok) {\n    throw new Error(\"Failed to fecth posts\");\n  }\n  const response = await res.json();\n  if (response?.status === 200) {\n    return response!.posts;\n  }\n  return null;\n}\n"
+        }
+    ]
+}

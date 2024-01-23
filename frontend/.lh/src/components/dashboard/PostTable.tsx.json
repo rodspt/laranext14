@@ -1,0 +1,22 @@
+{
+    "sourceFile": "src/components/dashboard/PostTable.tsx",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 1,
+            "patches": [
+                {
+                    "date": 1705972702826,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1705972710655,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -28,9 +28,9 @@\n         <TableRow>\n           <TableHead>Titulo</TableHead>\n           <TableHead>Imagem</TableHead>\n           <TableHead>Criado</TableHead>\n-          <TableHead>A��o</TableHead>\n+          <TableHead>Acao</TableHead>\n         </TableRow>\n       </TableHeader>\n       <TableBody>\n         {posts.map((item, index) => (\n"
+                }
+            ],
+            "date": 1705972702826,
+            "name": "Commit-0",
+            "content": "\"use client\";\nimport React from \"react\";\nimport {\n  Table,\n  TableBody,\n  TableCaption,\n  TableCell,\n  TableHead,\n  TableHeader,\n  TableRow,\n} from \"@/components/ui/table\";\nimport { formatDate, getImageUrl } from \"@/lib/utils\";\nimport Image from \"next/image\";\nimport DeletePost from \"./DeletePost\";\nimport { CustomUser } from \"@/app/api/auth/[...nextauth]/authOptions\";\n\nexport default function PostTable({\n  posts,\n  user,\n}: {\n  posts: Array<Post>;\n  user: CustomUser;\n}) {\n  return (\n    <Table>\n      <TableCaption>Listagem de publicacoes.</TableCaption>\n      <TableHeader>\n        <TableRow>\n          <TableHead>Titulo</TableHead>\n          <TableHead>Imagem</TableHead>\n          <TableHead>Criado</TableHead>\n          <TableHead>A��o</TableHead>\n        </TableRow>\n      </TableHeader>\n      <TableBody>\n        {posts.map((item, index) => (\n          <TableRow key={index}>\n            <TableCell className=\"font-medium\">{item.title}</TableCell>\n            <TableCell>\n              {item?.image ? (\n                <Image\n                  src={getImageUrl(item.image)}\n                  width={40}\n                  height={40}\n                  alt=\"image\"\n                  className=\"rounded-full w-10 h-10\"\n                />\n              ) : (\n                \"N/A\"\n              )}\n            </TableCell>\n            <TableCell>{formatDate(item.created_at)}</TableCell>\n            <TableCell className=\"text-right\">\n              <DeletePost postId={item.id} user={user} />\n            </TableCell>\n          </TableRow>\n        ))}\n      </TableBody>\n    </Table>\n  );\n}\n"
+        }
+    ]
+}

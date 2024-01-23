@@ -1,0 +1,18 @@
+{
+    "sourceFile": "src/lib/utils.ts",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 0,
+            "patches": [
+                {
+                    "date": 1705972565007,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                }
+            ],
+            "date": 1705972565006,
+            "name": "Commit-0",
+            "content": "import { type ClassValue, clsx } from \"clsx\";\nimport { twMerge } from \"tailwind-merge\";\nimport moment from \"moment\";\nimport 'moment/locale/pt-br';\nimport slugify from \"slugify\";\nimport Env from \"./Env\";\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs));\n}\n\nexport const formatDate = (date: string): string => {\n  return moment(date).fromNow();\n};\n\nexport const getImageUrl = (path: string) => {\n  return `${Env.API_URL}/storage/${path}`;\n};\n\n// * Create Slugify url\nexport const createSlugUrl = (title: string, id: number): string => {\n  const slug = slugify(title, {\n    remove: undefined,\n    trim: true,\n    strict: true,\n  });\n\n  const slugUrl = slug + \"-\" + id;\n  return slugUrl;\n};\n\n// * Extract id from slug url\nexport const extractId = (slug: string): number => {\n  const parts = slug.split(\"-\");\n  const postId = parseInt(parts[parts.length - 1]);\n  return postId;\n};\n"
+        }
+    ]
+}

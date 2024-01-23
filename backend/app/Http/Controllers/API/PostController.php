@@ -5,8 +5,8 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Models\Post;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Log;
 
 class PostController extends Controller
 {
@@ -24,16 +24,15 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-       $payload = $request->validate([
-          "title" => "required|min:5|max:190",
-          "content" => "nullable|max:20000",
-          "short_description" => "min:5|max:250",
-          "image" => "nullable|image|mimes:png,jpg,jpeg,webp,gif,svg|max:2048"
-       ]);
-
-       try{
-           $user = $request->user();
-           $payload["user_id"] = $user->id;
+        $payload = $request->validate([
+            "title" => "required|min:5|max:190",
+            "content" => "nullable|max:20000",
+            "short_description" => "min:5|max:250",
+            "image" => "nullable|image|mimes:png,jpg,svg,webp,jpeg,gif|max:2048"
+        ]);
+        try {
+            $user = $request->user();
+            $payload["user_id"] = $user->id;
 
            if(isset($payload["image"])){
                $payload["image"] = $payload["image"]->store($user->id);
@@ -55,7 +54,9 @@ class PostController extends Controller
     public function show(string $id)
     {
         try {
-            $post = Post::select("id", "user_id", "title", "image", "content", "short_description", "created_at")->with("user")->where("id", $id)->first();
+            $post = Post::select("id", "user_id", "title", "image", "content", "short_description", "created_at")
+                ->with("user")
+                ->where("id", $id)->first();
             return ["status" => 200, "post" => $post];
         } catch (\Exception $err) {
             Log::info("post_show_err =>" . $err->getMessage());
@@ -69,7 +70,7 @@ class PostController extends Controller
     public function update(Request $request, string $id)
     {
         $payload = $request->validate([
-            "title" => "min:5|max:190",
+            "title" => "required|min:5|max:190",
             "content" => "nullable|max:20000",
         ]);
         try {
@@ -107,5 +108,12 @@ class PostController extends Controller
             return response()->json(["status" => 500, "message" => "Ocorreu um erro durante a exclusão da publicação"], 500);
         }
 
+    }
+
+    public function fetchUserPosts(Request $request){
+        $user = $request->user();
+        $posts = Post::select("id", "user_id", "title", "image", "created_at")->with("user")
+          ->where("user_id", $user->id)->get();
+        return ["status"=>200,'posts'=> $posts];
     }
 }

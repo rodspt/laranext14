@@ -1,0 +1,22 @@
+{
+    "sourceFile": "src/components/comment/FetchComments.tsx",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 1,
+            "patches": [
+                {
+                    "date": 1705972380936,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1705972387571,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -33,9 +33,9 @@\n   };\n \n   return (\n     <div>\n-      <h1 className=\"text-2xl font-bold mt-10\">Coment�rios:</h1>\n+      <h1 className=\"text-2xl font-bold mt-10\">Comentarios:</h1>\n       {loading && <Loading />}\n       {comments &&\n         comments.length > 0 &&\n         comments.map((item, index) => (\n"
+                }
+            ],
+            "date": 1705972380936,
+            "name": "Commit-0",
+            "content": "\"use client\";\nimport { CustomSession } from \"@/app/api/auth/[...nextauth]/authOptions\";\nimport Loading from \"@/app/loading\";\nimport { fetchComments } from \"@/lib/ApiService\";\nimport React, { useState, useEffect } from \"react\";\nimport UserAvatar from \"../common/UserAvatar\";\nimport AddComment from \"./AddComment\";\nimport { formatDate } from \"@/lib/utils\";\nimport CommentCard from \"./CommentCard\";\n\nexport default function FetchComments({\n  session,\n  postId,\n}: {\n  session: CustomSession | null;\n  postId: number;\n}) {\n  const [comments, setComments] = useState<Array<CommentType> | [] | null>();\n  const [loading, setLoading] = useState<boolean>(false);\n  useEffect(() => {\n    getComments();\n  }, []);\n\n  const getComments = async () => {\n    setLoading(true);\n    const res = await fetchComments(postId);\n    setLoading(false);\n    setComments(res);\n  };\n\n  const updateState = (comment: CommentType) => {\n    setComments([comment, ...comments!]);\n  };\n\n  return (\n    <div>\n      <h1 className=\"text-2xl font-bold mt-10\">Coment�rios:</h1>\n      {loading && <Loading />}\n      {comments &&\n        comments.length > 0 &&\n        comments.map((item, index) => (\n          <CommentCard key={index} comment={item} />\n        ))}\n\n      <AddComment\n        session={session}\n        postId={postId}\n        updateCallback={updateState}\n      />\n    </div>\n  );\n}\n"
+        }
+    ]
+}
